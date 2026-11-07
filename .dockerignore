@@ -1,0 +1,25 @@
+# Not needed inside the image build context
+venv/
+__pycache__/
+*.pyc
+
+# Runtime state & media (mounted as volumes instead)
+data/
+logs/
+videos/
+processed/
+
+# Leftover encode working dirs
+.ab-av1-*/
+.b18210a/
+
+# Scratch end-to-end test fixture
+.e2etest/
+
+# Repo noise
+.git/
+Dockerfile
+docker-compose.yml
+docker-compose.nogpu.yml
+Makefile
+README.md

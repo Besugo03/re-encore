@@ -1,0 +1,7 @@
+# Compose override: turns GPU passthrough back OFF.
+# `make up` applies this automatically when no NVIDIA GPU + Container Toolkit
+# is detected. Manual use:
+#   docker compose -f docker-compose.yml -f docker-compose.nogpu.yml up -d --build
+services:
+  re-encore:
+    gpus: !reset null

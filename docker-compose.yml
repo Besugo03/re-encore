@@ -1,0 +1,41 @@
+name: re-encore
+
+services:
+  re-encore:
+    build:
+      context: .
+      args:
+        # Match your host user so encoded files are not root-owned.
+        # Override for other machines: PUID=1001 PGID=1001 docker compose build
+        PUID: "${PUID:-1000}"
+        PGID: "${PGID:-1000}"
+    image: re-encore:latest
+    container_name: re-encore
+    restart: unless-stopped
+    ports:
+      - "7860:7860"
+    environment:
+      DATA_DIR: /app/data
+    volumes:
+      # App state: config.json, history.json, thumbnail cache
+      - ./data:/app/data
+      # Media library, mounted at the SAME absolute path as on the host
+      # so the paths already
+      # stored in data/config.json keep working unchanged ($MEDIA_DIR/to_process
+      # and $MEDIA_DIR/processed).
+      # Deploying elsewhere? Set MEDIA_DIR in .env, then update the watched
+      # folders / processed directory in the UI (Settings & Folders tab).
+      - "${MEDIA_DIR:-/YOUR-MEDIA-DIR}:${MEDIA_DIR:-/YOUR-DIR}"
+    # An encode can be hours long; give it a minute to wind down on stop.
+    # (A killed encode shows up under "Failed & Stopped" and can be resumed.)
+    stop_grace_period: 1m
+
+    # --- NVIDIA GPU (NVENC) ---------------------------------------------
+    # GPU is ON here by default. `make up` detects the GPU and auto-installs
+    # the NVIDIA Container Toolkit if it's missing (one-time, sudo):
+    #   https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+    # Plain `docker compose up` requires the toolkit to already be installed.
+    # No NVIDIA GPU at all? Use `make up` (it applies docker-compose.nogpu.yml)
+    # or comment out `gpus: all`, then set CPU SVT-AV1 encoder flags in the
+    # web UI (e.g. `--preset 6`, no `-e av1_nvenc`).
+    gpus: all
