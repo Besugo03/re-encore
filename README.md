@@ -5,6 +5,9 @@ A small docker container to re-encode your media library and save space on your 
 - Based on `ab-av1`, uses `--min-vmaf` to ensure your encodes are up to par with your quality standards
 - Support for NVIDIA Hardware encoding
 
+<img width="1184" height="671" alt="image" src="https://github.com/user-attachments/assets/10e35e23-be2c-4d71-85cf-af943d9852f1" />
+
+
 ## Quick start
 
 - set `MEDIA_DIR` in `.env` (copy the template first: `cp .env.example .env`).
