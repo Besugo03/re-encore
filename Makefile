@@ -28,6 +28,9 @@ GPU_INSTALL = curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | s
 
 .PHONY: up down restart logs status gpu-test gpu-setup
 up:
+	# Create ./data before the Docker daemon does, so it is owned by the
+	# invoking user and the (non-root) container can write to it.
+	@mkdir -p data
 	@echo ">> mode: $(shell if $(GPU_OK); then echo 'GPU (NVENC)'; else echo 'CPU (SVT-AV1)'; fi)"
 	@if ! (docker info --format '{{json .Runtimes}}' 2>/dev/null | grep -qi nvidia) && nvidia-smi -L >/dev/null 2>&1; then \
 	  if command -v apt-get >/dev/null 2>&1; then \
